@@ -85,9 +85,10 @@
       transition: background 0.25s ease;
     }
 
+    /* تم تكبير حاوية الصورة لتظهر بشكل أكبر وملامحها كاملة */
     .user-image-container {
-      width: 70%;
-      max-width: 280px;
+      width: 90%;               /* زيادة العرض من 70% إلى 90% */
+      max-width: 500px;        /* زيادة الحد الأقصى من 280px إلى 500px */
       margin-bottom: 20px;
       border-radius: 32px;
       background: rgba(0,0,0,0.4);
@@ -226,7 +227,7 @@
 
     @media (max-width: 800px) {
       .greeting-text { font-size: 1.5rem; }
-      .user-image-container { width: 80%; }
+      .user-image-container { width: 85%; max-width: 380px; } /* للشاشات الصغيرة أيضًا تكبير */
     }
   </style>
 </head>
@@ -325,7 +326,7 @@
 </div>
 
 <script>
-  // جميع العناصر كما هي دون أي تعديل
+  // جميع العناصر كما هي دون أي تعديل في الكود
   const eidTemplate = document.getElementById('eidTemplate');
   const userDisplayImage = document.getElementById('userDisplayImage');
   const greetingDisplay = document.getElementById('greetingDisplay');
@@ -382,23 +383,21 @@
   glowToggle.onclick = () => { hasGlow = !hasGlow; if(hasGlow && hasShadow) hasShadow=false; updateTextStyle(); };
   updateGreeting();
 
-  // رفع الصورة و Cropper (تم تعديل الخيارات فقط لجعل القص حراً)
+  // رفع الصورة و Cropper (القص الحر)
   function openCropper(file) {
     const reader = new FileReader();
     reader.onload = (e) => {
       cropperAreaDiv.style.display = 'block';
       imageContainer.innerHTML = `<img id="cropperImg" src="${e.target.result}" style="max-width:100%">`;
       if(cropper) cropper.destroy();
-      // إعدادات Cropper بدون أي قيود على النسبة أو الحجم
       cropper = new Cropper(document.getElementById('cropperImg'), {
-        viewMode: 1,           // يسمح بتحريك الصورة ولكن لا يفرض قيوداً على صندوق القص
-        dragMode: 'crop',      // يبدأ التحديد فور السحب
+        viewMode: 1,
+        dragMode: 'crop',
         zoomable: true,
         scalable: true,
-        autoCropArea: 1,       // منطقة القص الافتراضية تغطي الصورة كاملة
+        autoCropArea: 1,
         responsive: true,
         background: false,
-        // لم نحدد aspectRatio ولا minCropBoxWidth/Height -> حر بالكامل
       });
     };
     reader.readAsDataURL(file);
@@ -414,7 +413,7 @@
   });
   applyCrop.onclick = () => {
     if(cropper) {
-      const canvas = cropper.getCroppedCanvas({ width: 1000, height: 750 }); // أبعاد نهائية عالية الجودة
+      const canvas = cropper.getCroppedCanvas({ width: 1000, height: 750 });
       userDisplayImage.src = canvas.toDataURL();
       cropperAreaDiv.style.display = 'none';
       cropper.destroy();
@@ -423,7 +422,7 @@
   };
   resetCrop.onclick = () => { if(cropper) cropper.reset(); };
 
-  // تحريك الصورة (بدون تغيير)
+  // تحريك الصورة
   const imgContainer = document.getElementById('userImgWrap');
   let isDragging = false, startX, startY, translateX = 0, translateY = 0;
   imgContainer.addEventListener('mousedown', (e) => { isDragging = true; startX = e.clientX - translateX; startY = e.clientY - translateY; imgContainer.style.cursor = 'grabbing'; });
