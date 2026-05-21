@@ -101,7 +101,7 @@
     .user-image {
       width: 100%;
       aspect-ratio: 4/3;
-      object-fit: contain;  /* التعديل الوحيد: من cover إلى contain */
+      object-fit: contain;
       border-radius: 26px;
       display: block;
       pointer-events: none;
@@ -325,7 +325,7 @@
 </div>
 
 <script>
-  // نفس الكود السابق تماماً بدون أي تغيير
+  // نفس الكود السابق ولكن مع تعديل تطبيق القص
   const eidTemplate = document.getElementById('eidTemplate');
   const userDisplayImage = document.getElementById('userDisplayImage');
   const greetingDisplay = document.getElementById('greetingDisplay');
@@ -401,9 +401,11 @@
     const file = e.dataTransfer.files[0];
     if(file && file.type.startsWith('image/')) openCropper(file);
   });
+  
+  // التعديل هنا: إزالة الأبعاد الثابتة للحفاظ على الحجم الطبيعي
   applyCrop.onclick = () => {
     if(cropper) {
-      const canvas = cropper.getCroppedCanvas({ width: 1000, height: 750 });
+      const canvas = cropper.getCroppedCanvas(); // بدون تحديد أبعاد
       userDisplayImage.src = canvas.toDataURL();
       cropperAreaDiv.style.display = 'none';
       cropper.destroy();
