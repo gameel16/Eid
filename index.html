@@ -85,10 +85,9 @@
       transition: background 0.25s ease;
     }
 
-    /* تم تكبير حاوية الصورة لتظهر بشكل أكبر وملامحها كاملة */
     .user-image-container {
-      width: 90%;               /* زيادة العرض من 70% إلى 90% */
-      max-width: 500px;        /* زيادة الحد الأقصى من 280px إلى 500px */
+      width: 90%;
+      max-width: 500px;
       margin-bottom: 20px;
       border-radius: 32px;
       background: rgba(0,0,0,0.4);
@@ -102,7 +101,7 @@
     .user-image {
       width: 100%;
       aspect-ratio: 4/3;
-      object-fit: cover;
+      object-fit: contain;  /* التعديل الوحيد: من cover إلى contain */
       border-radius: 26px;
       display: block;
       pointer-events: none;
@@ -227,7 +226,7 @@
 
     @media (max-width: 800px) {
       .greeting-text { font-size: 1.5rem; }
-      .user-image-container { width: 85%; max-width: 380px; } /* للشاشات الصغيرة أيضًا تكبير */
+      .user-image-container { width: 85%; max-width: 380px; }
     }
   </style>
 </head>
@@ -237,7 +236,7 @@
     <div class="controls-panel">
       <h2 style="text-align:center;"><i class="fas fa-moon"></i> تصميم تهاني العيد 2026</h2>
       
-      <div class="section-title"><i class="fas fa-cloud-upload-alt"></i> رفع الصورة & قص (حر بدون قيود)</div>
+      <div class="section-title"><i class="fas fa-cloud-upload-alt"></i> رفع الصورة & قص (حر)</div>
       <div id="dropZone" style="border:2px dashed #d4af37; border-radius: 32px; padding: 20px; text-align:center; margin-bottom:12px; cursor:pointer;">
         <i class="fas fa-image fa-2x"></i>
         <p>اسحب الصورة هنا أو اضغط للاختيار</p>
@@ -249,7 +248,7 @@
           <button id="applyCropBtn" class="btn-gold"><i class="fas fa-crop-alt"></i> تطبيق القص</button>
           <button id="resetCropBtn" class="btn-outline"><i class="fas fa-undo"></i> إعادة</button>
         </div>
-        <small><i class="fas fa-expand-alt"></i> قص حر: يمكنك تحديد أي مساحة مستطيلة أو مربعة بدون نسبة محددة</small>
+        <small><i class="fas fa-expand-alt"></i> قص حر: يمكنك تحديد أي مساحة</small>
       </div>
 
       <div class="section-title"><i class="fas fa-edit"></i> نص التهنئة</div>
@@ -313,7 +312,7 @@
           </div>
         </div>
       </div>
-      <div style="font-size:13px;"><i class="fas fa-magic"></i> جميع التعديلات لحظية – اسحب الصورة داخل الإطار لتحريكها</div>
+      <div style="font-size:13px;"><i class="fas fa-magic"></i> جميع التعديلات لحظية – اسحب الصورة لتحريكها</div>
     </div>
   </div>
   <footer>
@@ -326,7 +325,7 @@
 </div>
 
 <script>
-  // جميع العناصر كما هي دون أي تعديل في الكود
+  // نفس الكود السابق تماماً بدون أي تغيير
   const eidTemplate = document.getElementById('eidTemplate');
   const userDisplayImage = document.getElementById('userDisplayImage');
   const greetingDisplay = document.getElementById('greetingDisplay');
@@ -359,7 +358,6 @@
   let cropper = null;
   let isBold = false, isItalic = false, hasShadow = true, hasGlow = false;
 
-  // وظائف النص (بدون تغيير)
   function updateTextStyle() {
     let style = `font-family: '${fontFamilySelect.value}', 'Cairo'; font-size: ${fontSizeInput.value}px; color: ${fontColorPicker.value}; font-weight: ${isBold ? 'bold' : 'normal'}; font-style: ${isItalic ? 'italic' : 'normal'}; text-align: ${textAlignSelect.value};`;
     if (hasShadow && !hasGlow) style += `text-shadow: 3px 3px 7px rgba(0,0,0,0.6);`;
@@ -383,7 +381,6 @@
   glowToggle.onclick = () => { hasGlow = !hasGlow; if(hasGlow && hasShadow) hasShadow=false; updateTextStyle(); };
   updateGreeting();
 
-  // رفع الصورة و Cropper (القص الحر)
   function openCropper(file) {
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -391,18 +388,11 @@
       imageContainer.innerHTML = `<img id="cropperImg" src="${e.target.result}" style="max-width:100%">`;
       if(cropper) cropper.destroy();
       cropper = new Cropper(document.getElementById('cropperImg'), {
-        viewMode: 1,
-        dragMode: 'crop',
-        zoomable: true,
-        scalable: true,
-        autoCropArea: 1,
-        responsive: true,
-        background: false,
+        viewMode: 1, dragMode: 'crop', zoomable: true, scalable: true, autoCropArea: 1, responsive: true, background: false,
       });
     };
     reader.readAsDataURL(file);
   }
-  
   uploadInput.addEventListener('change', (e) => { if(e.target.files[0]) openCropper(e.target.files[0]); });
   dropZone.addEventListener('click', () => uploadInput.click());
   dropZone.addEventListener('dragover', (e) => e.preventDefault());
@@ -422,7 +412,6 @@
   };
   resetCrop.onclick = () => { if(cropper) cropper.reset(); };
 
-  // تحريك الصورة
   const imgContainer = document.getElementById('userImgWrap');
   let isDragging = false, startX, startY, translateX = 0, translateY = 0;
   imgContainer.addEventListener('mousedown', (e) => { isDragging = true; startX = e.clientX - translateX; startY = e.clientY - translateY; imgContainer.style.cursor = 'grabbing'; });
@@ -432,12 +421,10 @@
   window.addEventListener('touchmove', (e) => { if(isDragging) { translateX = e.touches[0].clientX - startX; translateY = e.touches[0].clientY - startY; imgContainer.style.transform = `translate(${translateX}px, ${translateY}px)`; } });
   window.addEventListener('touchend', () => { isDragging = false; });
 
-  // الخلفيات
   function setBg(bg) { eidTemplate.style.background = bg; eidTemplate.style.backgroundSize = 'cover'; eidTemplate.style.backgroundPosition = 'center'; }
   bgPresets.forEach(btn => btn.addEventListener('click', () => setBg(btn.getAttribute('data-bg'))));
   applyCustomBg.onclick = () => { if(customBgInput.files[0]) { const url = URL.createObjectURL(customBgInput.files[0]); setBg(`url(${url})`); } };
 
-  // الزخارف
   function updateDecorations() {
     const layer = document.getElementById('decorationsLayer');
     layer.innerHTML = '';
@@ -454,7 +441,6 @@
   decoOpacitySlider.addEventListener('input', updateDecorations);
   updateDecorations();
 
-  // التصدير
   async function exportImage(type) {
     const el = document.getElementById('previewInner');
     const canvas = await html2canvas(el, { scale: 4, backgroundColor: null, useCORS: true });
