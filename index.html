@@ -34,7 +34,6 @@
       gap: 30px;
     }
 
-    /* لوحة التحكم */
     .controls-panel {
       flex: 1.2;
       min-width: 320px;
@@ -44,10 +43,8 @@
       padding: 28px 24px;
       border: 1px solid rgba(212, 175, 55, 0.5);
       box-shadow: 0 20px 35px rgba(0,0,0,0.4);
-      transition: all 0.2s;
     }
 
-    /* المعاينة */
     .preview-panel {
       flex: 2;
       min-width: 420px;
@@ -88,7 +85,6 @@
       transition: background 0.25s ease;
     }
 
-    /* حاوية الصورة القابلة للتحريك */
     .user-image-container {
       width: 70%;
       max-width: 280px;
@@ -141,7 +137,6 @@
       transition: all 0.2s;
     }
 
-    /* تحكمات */
     .section-title {
       font-size: 1.3rem;
       font-weight: 600;
@@ -216,7 +211,6 @@
       padding-top: 20px;
     }
     
-    /* جعل رقم الجوال في الفوتر قابلاً للنقر وفتح واتساب */
     .whatsapp-link {
       color: #cbb26a;
       text-decoration: none;
@@ -242,8 +236,7 @@
     <div class="controls-panel">
       <h2 style="text-align:center;"><i class="fas fa-moon"></i> تصميم تهاني العيد 2026</h2>
       
-      <!-- رفع الصورة + سحب وإفلات -->
-      <div class="section-title"><i class="fas fa-cloud-upload-alt"></i> رفع الصورة & قص</div>
+      <div class="section-title"><i class="fas fa-cloud-upload-alt"></i> رفع الصورة & قص (حر بدون قيود)</div>
       <div id="dropZone" style="border:2px dashed #d4af37; border-radius: 32px; padding: 20px; text-align:center; margin-bottom:12px; cursor:pointer;">
         <i class="fas fa-image fa-2x"></i>
         <p>اسحب الصورة هنا أو اضغط للاختيار</p>
@@ -255,14 +248,12 @@
           <button id="applyCropBtn" class="btn-gold"><i class="fas fa-crop-alt"></i> تطبيق القص</button>
           <button id="resetCropBtn" class="btn-outline"><i class="fas fa-undo"></i> إعادة</button>
         </div>
-        <small><i class="fas fa-arrows-alt"></i> يمكنك التكبير/التصغير وسحب منطقة القص</small>
+        <small><i class="fas fa-expand-alt"></i> قص حر: يمكنك تحديد أي مساحة مستطيلة أو مربعة بدون نسبة محددة</small>
       </div>
 
-      <!-- النص المخصص -->
       <div class="section-title"><i class="fas fa-edit"></i> نص التهنئة</div>
       <textarea id="greetingInput" rows="2" maxlength="120">عيد أضحى مبارك</textarea>
 
-      <!-- الخطوط -->
       <div class="section-title"><i class="fas fa-font"></i> الخطوط العربية</div>
       <select id="fontFamilySelect">
         <option>Cairo</option><option>Tajawal</option><option>Changa</option><option>Reem Kufi</option>
@@ -281,7 +272,6 @@
         <button id="glowToggle" class="btn-outline"><i class="fas fa-sun"></i> توهج</button>
       </div>
 
-      <!-- خلفيات -->
       <div class="section-title"><i class="fas fa-palette"></i> الخلفيات</div>
       <div class="btn-group" id="bgPresets">
         <button data-bg="linear-gradient(145deg, #0b2e23, #05120e)">أخضر داكن</button>
@@ -294,7 +284,6 @@
         <button id="applyCustomBg" class="btn-gold">رفع خلفية</button>
       </div>
 
-      <!-- زخارف متحركة -->
       <div class="section-title"><i class="fas fa-gem"></i> زخارف إسلامية</div>
       <div class="btn-group">
         <label><input type="checkbox" id="showCrescent"> 🌙 هلال</label>
@@ -304,7 +293,6 @@
       </div>
       <label>شفافية الزخارف: <input type="range" id="decoOpacity" min="0.2" max="0.9" step="0.01" value="0.55"></label>
 
-      <!-- تصدير -->
       <div class="section-title"><i class="fas fa-download"></i> تحميل التصميم</div>
       <div class="btn-group">
         <button id="exportPNG" class="btn-gold"><i class="fas fa-camera-retro"></i> PNG (4K)</button>
@@ -312,7 +300,6 @@
       </div>
     </div>
 
-    <!-- المعاينة -->
     <div class="preview-panel">
       <div class="card-preview">
         <div class="preview-inner" id="previewInner">
@@ -338,7 +325,7 @@
 </div>
 
 <script>
-  // عناصر DOM
+  // جميع العناصر كما هي دون أي تعديل
   const eidTemplate = document.getElementById('eidTemplate');
   const userDisplayImage = document.getElementById('userDisplayImage');
   const greetingDisplay = document.getElementById('greetingDisplay');
@@ -369,10 +356,9 @@
   const exportJPG = document.getElementById('exportJPG');
 
   let cropper = null;
-  let currentFile = null;
   let isBold = false, isItalic = false, hasShadow = true, hasGlow = false;
 
-  // وظائف النص
+  // وظائف النص (بدون تغيير)
   function updateTextStyle() {
     let style = `font-family: '${fontFamilySelect.value}', 'Cairo'; font-size: ${fontSizeInput.value}px; color: ${fontColorPicker.value}; font-weight: ${isBold ? 'bold' : 'normal'}; font-style: ${isItalic ? 'italic' : 'normal'}; text-align: ${textAlignSelect.value};`;
     if (hasShadow && !hasGlow) style += `text-shadow: 3px 3px 7px rgba(0,0,0,0.6);`;
@@ -396,19 +382,28 @@
   glowToggle.onclick = () => { hasGlow = !hasGlow; if(hasGlow && hasShadow) hasShadow=false; updateTextStyle(); };
   updateGreeting();
 
-  // رفع الصورة و Cropper
+  // رفع الصورة و Cropper (تم تعديل الخيارات فقط لجعل القص حراً)
   function openCropper(file) {
     const reader = new FileReader();
     reader.onload = (e) => {
       cropperAreaDiv.style.display = 'block';
       imageContainer.innerHTML = `<img id="cropperImg" src="${e.target.result}" style="max-width:100%">`;
       if(cropper) cropper.destroy();
+      // إعدادات Cropper بدون أي قيود على النسبة أو الحجم
       cropper = new Cropper(document.getElementById('cropperImg'), {
-        aspectRatio: 4/3, viewMode: 2, dragMode: 'move', zoomable: true, scalable: true, autoCropArea: 0.9
+        viewMode: 1,           // يسمح بتحريك الصورة ولكن لا يفرض قيوداً على صندوق القص
+        dragMode: 'crop',      // يبدأ التحديد فور السحب
+        zoomable: true,
+        scalable: true,
+        autoCropArea: 1,       // منطقة القص الافتراضية تغطي الصورة كاملة
+        responsive: true,
+        background: false,
+        // لم نحدد aspectRatio ولا minCropBoxWidth/Height -> حر بالكامل
       });
     };
     reader.readAsDataURL(file);
   }
+  
   uploadInput.addEventListener('change', (e) => { if(e.target.files[0]) openCropper(e.target.files[0]); });
   dropZone.addEventListener('click', () => uploadInput.click());
   dropZone.addEventListener('dragover', (e) => e.preventDefault());
@@ -419,21 +414,21 @@
   });
   applyCrop.onclick = () => {
     if(cropper) {
-      const canvas = cropper.getCroppedCanvas({ width: 800, height: 600 });
+      const canvas = cropper.getCroppedCanvas({ width: 1000, height: 750 }); // أبعاد نهائية عالية الجودة
       userDisplayImage.src = canvas.toDataURL();
       cropperAreaDiv.style.display = 'none';
-      cropper.destroy(); cropper = null;
+      cropper.destroy();
+      cropper = null;
     }
   };
   resetCrop.onclick = () => { if(cropper) cropper.reset(); };
 
-  // تحريك الصورة داخل الحاوية (سحب)
+  // تحريك الصورة (بدون تغيير)
   const imgContainer = document.getElementById('userImgWrap');
   let isDragging = false, startX, startY, translateX = 0, translateY = 0;
   imgContainer.addEventListener('mousedown', (e) => { isDragging = true; startX = e.clientX - translateX; startY = e.clientY - translateY; imgContainer.style.cursor = 'grabbing'; });
   window.addEventListener('mousemove', (e) => { if(isDragging) { translateX = e.clientX - startX; translateY = e.clientY - startY; imgContainer.style.transform = `translate(${translateX}px, ${translateY}px)`; } });
   window.addEventListener('mouseup', () => { isDragging = false; imgContainer.style.cursor = 'grab'; });
-  // دعم اللمس للجوال
   imgContainer.addEventListener('touchstart', (e) => { isDragging = true; startX = e.touches[0].clientX - translateX; startY = e.touches[0].clientY - translateY; });
   window.addEventListener('touchmove', (e) => { if(isDragging) { translateX = e.touches[0].clientX - startX; translateY = e.touches[0].clientY - startY; imgContainer.style.transform = `translate(${translateX}px, ${translateY}px)`; } });
   window.addEventListener('touchend', () => { isDragging = false; });
@@ -460,7 +455,7 @@
   decoOpacitySlider.addEventListener('input', updateDecorations);
   updateDecorations();
 
-  // التصدير بجودة 4K
+  // التصدير
   async function exportImage(type) {
     const el = document.getElementById('previewInner');
     const canvas = await html2canvas(el, { scale: 4, backgroundColor: null, useCORS: true });
@@ -472,7 +467,6 @@
   exportPNG.onclick = () => exportImage('png');
   exportJPG.onclick = () => exportImage('jpg');
 
-  // خلفية ابتدائية
   setBg('linear-gradient(135deg, #0a2a20, #031510)');
   hasShadow = true; updateTextStyle();
 </script>
