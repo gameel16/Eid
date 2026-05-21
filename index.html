@@ -101,7 +101,7 @@
     .user-image {
       width: 100%;
       aspect-ratio: 4/3;
-      object-fit: contain;
+      object-fit: cover;
       border-radius: 26px;
       display: block;
       pointer-events: none;
@@ -236,7 +236,7 @@
     <div class="controls-panel">
       <h2 style="text-align:center;"><i class="fas fa-moon"></i> تصميم تهاني العيد 2026</h2>
       
-      <div class="section-title"><i class="fas fa-cloud-upload-alt"></i> رفع الصورة & قص (حر)</div>
+      <div class="section-title"><i class="fas fa-cloud-upload-alt"></i> رفع الصورة & قص (بنسبة 4:3 للحصول على تناسق مثالي)</div>
       <div id="dropZone" style="border:2px dashed #d4af37; border-radius: 32px; padding: 20px; text-align:center; margin-bottom:12px; cursor:pointer;">
         <i class="fas fa-image fa-2x"></i>
         <p>اسحب الصورة هنا أو اضغط للاختيار</p>
@@ -248,7 +248,7 @@
           <button id="applyCropBtn" class="btn-gold"><i class="fas fa-crop-alt"></i> تطبيق القص</button>
           <button id="resetCropBtn" class="btn-outline"><i class="fas fa-undo"></i> إعادة</button>
         </div>
-        <small><i class="fas fa-expand-alt"></i> قص حر: يمكنك تحديد أي مساحة</small>
+        <small><i class="fas fa-expand-alt"></i> قص بنسبة 4:3 للحصول على أفضل تناسق داخل التصميم</small>
       </div>
 
       <div class="section-title"><i class="fas fa-edit"></i> نص التهنئة</div>
@@ -325,7 +325,7 @@
 </div>
 
 <script>
-  // نفس الكود السابق ولكن مع تعديل تطبيق القص
+  // جميع العناصر
   const eidTemplate = document.getElementById('eidTemplate');
   const userDisplayImage = document.getElementById('userDisplayImage');
   const greetingDisplay = document.getElementById('greetingDisplay');
@@ -381,6 +381,7 @@
   glowToggle.onclick = () => { hasGlow = !hasGlow; if(hasGlow && hasShadow) hasShadow=false; updateTextStyle(); };
   updateGreeting();
 
+  // رفع الصورة و Cropper مع نسبة 4:3 لضمان تناسق مثالي
   function openCropper(file) {
     const reader = new FileReader();
     reader.onload = (e) => {
@@ -388,7 +389,14 @@
       imageContainer.innerHTML = `<img id="cropperImg" src="${e.target.result}" style="max-width:100%">`;
       if(cropper) cropper.destroy();
       cropper = new Cropper(document.getElementById('cropperImg'), {
-        viewMode: 1, dragMode: 'crop', zoomable: true, scalable: true, autoCropArea: 1, responsive: true, background: false,
+        aspectRatio: 4/3,          // تحديد النسبة لتتناسب مع حاوية الصورة
+        viewMode: 1,
+        dragMode: 'crop',
+        zoomable: true,
+        scalable: true,
+        autoCropArea: 1,
+        responsive: true,
+        background: false,
       });
     };
     reader.readAsDataURL(file);
@@ -401,11 +409,9 @@
     const file = e.dataTransfer.files[0];
     if(file && file.type.startsWith('image/')) openCropper(file);
   });
-  
-  // التعديل هنا: إزالة الأبعاد الثابتة للحفاظ على الحجم الطبيعي
   applyCrop.onclick = () => {
     if(cropper) {
-      const canvas = cropper.getCroppedCanvas(); // بدون تحديد أبعاد
+      const canvas = cropper.getCroppedCanvas();  // يحافظ على النسبة المحددة
       userDisplayImage.src = canvas.toDataURL();
       cropperAreaDiv.style.display = 'none';
       cropper.destroy();
@@ -414,6 +420,7 @@
   };
   resetCrop.onclick = () => { if(cropper) cropper.reset(); };
 
+  // تحريك الصورة
   const imgContainer = document.getElementById('userImgWrap');
   let isDragging = false, startX, startY, translateX = 0, translateY = 0;
   imgContainer.addEventListener('mousedown', (e) => { isDragging = true; startX = e.clientX - translateX; startY = e.clientY - translateY; imgContainer.style.cursor = 'grabbing'; });
